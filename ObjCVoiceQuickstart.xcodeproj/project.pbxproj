@@ -15,6 +15,7 @@
 		2459FDD91D83664300917CA9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2459FDD71D83664300917CA9 /* LaunchScreen.storyboard */; };
 		24BA34291D87431000B0B4F7 /* TwilioLogo.png in Resources */ = {isa = PBXBuildFile; fileRef = 24BA34281D87431000B0B4F7 /* TwilioLogo.png */; };
 		57E17BFAB5F16529B695216B /* Pods_ObjCVoiceQuickstart.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6668ECAE36BBC851D907DE5F /* Pods_ObjCVoiceQuickstart.framework */; };
+		CE4B7B771D98FF7A004701F9 /* ProviderDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4B7B751D98FF7A004701F9 /* ProviderDelegate.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +34,8 @@
 		46CB7828428C0DCCBD8C1237 /* Pods-ObjCVoiceQuickstart.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ObjCVoiceQuickstart.release.xcconfig"; path = "Pods/Target Support Files/Pods-ObjCVoiceQuickstart/Pods-ObjCVoiceQuickstart.release.xcconfig"; sourceTree = "<group>"; };
 		58793B929D0C0253BAEAAE08 /* Pods-ObjCVoiceQuickstart.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ObjCVoiceQuickstart.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ObjCVoiceQuickstart/Pods-ObjCVoiceQuickstart.debug.xcconfig"; sourceTree = "<group>"; };
 		6668ECAE36BBC851D907DE5F /* Pods_ObjCVoiceQuickstart.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ObjCVoiceQuickstart.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE4B7B751D98FF7A004701F9 /* ProviderDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProviderDelegate.m; sourceTree = "<group>"; };
+		CE4B7B761D98FF7A004701F9 /* ProviderDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProviderDelegate.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +76,8 @@
 				2459FDCD1D83664300917CA9 /* AppDelegate.m */,
 				2459FDCF1D83664300917CA9 /* ViewController.h */,
 				2459FDD01D83664300917CA9 /* ViewController.m */,
+				CE4B7B751D98FF7A004701F9 /* ProviderDelegate.m */,
+				CE4B7B761D98FF7A004701F9 /* ProviderDelegate.h */,
 				2459FDD21D83664300917CA9 /* Main.storyboard */,
 				2459FDD51D83664300917CA9 /* Assets.xcassets */,
 				24BA34281D87431000B0B4F7 /* TwilioLogo.png */,
@@ -142,7 +147,8 @@
 				TargetAttributes = {
 					2459FDC51D83664300917CA9 = {
 						CreatedOnToolsVersion = 8.0;
-						ProvisioningStyle = Automatic;
+						DevelopmentTeam = 8KW4SQ3F4C;
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -242,6 +248,7 @@
 				2459FDD11D83664300917CA9 /* ViewController.m in Sources */,
 				2459FDCE1D83664300917CA9 /* AppDelegate.m in Sources */,
 				2459FDCB1D83664300917CA9 /* main.m in Sources */,
+				CE4B7B771D98FF7A004701F9 /* ProviderDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -362,11 +369,16 @@
 			baseConfigurationReference = 58793B929D0C0253BAEAAE08 /* Pods-ObjCVoiceQuickstart.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = ObjCVoiceQuickstart/ObjCVoiceQuickstart.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Mary Alexis Solis (V8Q4YKXBG3)";
+				DEVELOPMENT_TEAM = 8KW4SQ3F4C;
 				INFOPLIST_FILE = ObjCVoiceQuickstart/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.twilio.ObjCVoiceQuickstart;
+				PRODUCT_BUNDLE_IDENTIFIER = com.noteabout.chat;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "f3376b8d-c3dd-4c23-8196-a58ad246115f";
+				PROVISIONING_PROFILE_SPECIFIER = "Noteabout Chat Development";
 			};
 			name = Debug;
 		};
@@ -375,11 +387,17 @@
 			baseConfigurationReference = 46CB7828428C0DCCBD8C1237 /* Pods-ObjCVoiceQuickstart.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = ObjCVoiceQuickstart/ObjCVoiceQuickstart.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Mary Alexis Solis (V8Q4YKXBG3)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Mary Alexis Solis (V8Q4YKXBG3)";
+				DEVELOPMENT_TEAM = 8KW4SQ3F4C;
 				INFOPLIST_FILE = ObjCVoiceQuickstart/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.twilio.ObjCVoiceQuickstart;
+				PRODUCT_BUNDLE_IDENTIFIER = com.noteabout.chat;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "5b145934-b720-4ab4-a4f7-c2a9ab52918d";
+				PROVISIONING_PROFILE_SPECIFIER = "com.noteabout.chat AppStore (JeanLexi)";
 			};
 			name = Release;
 		};

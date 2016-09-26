@@ -6,12 +6,18 @@
 //
 
 #import "ViewController.h"
+#import "ProviderDelegate.h"
 
 @import AVFoundation;
 @import PushKit;
 @import TwilioVoiceClient;
 
-static NSString *const kYourServerBaseURLString = <#URL TO YOUR ACCESS TOKEN SERVER#>;
+
+
+// URL TO YOUR ACCESS TOKEN is necessary because it allows connection to your
+// application server
+
+static NSString *const kYourServerBaseURLString = <#YOUR_BASE_URL#>;
 static NSString *const kAccessTokenEndpoint = @"/accessToken";
 
 @interface ViewController () <PKPushRegistryDelegate, TVONotificationDelegate, TVOIncomingCallDelegate, TVOOutgoingCallDelegate>
@@ -26,6 +32,9 @@ static NSString *const kAccessTokenEndpoint = @"/accessToken";
 
 @property (nonatomic, weak) IBOutlet UIButton *placeCallButton;
 @property (nonatomic, strong) UIAlertController* incomingAlertController;
+
+@property (nonatomic, strong) ProviderDelegate * provider;
+
 @end
 
 @implementation ViewController
@@ -33,9 +42,12 @@ static NSString *const kAccessTokenEndpoint = @"/accessToken";
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    //Setup of PUSH Notification
     self.voipRegistry = [[PKPushRegistry alloc] initWithQueue:dispatch_get_main_queue()];
     self.voipRegistry.delegate = self;
     self.voipRegistry.desiredPushTypes = [NSSet setWithObject:PKPushTypeVoIP];
+    self.provider = [[ProviderDelegate alloc] init];
+    self.provider.weakDelegate = self;
 
     [self toggleUIState:YES];
 }
@@ -44,30 +56,34 @@ static NSString *const kAccessTokenEndpoint = @"/accessToken";
     [super didReceiveMemoryWarning];
 }
 
+
+// Fecthing of access token
 - (NSString *)fetchAccessToken {
     NSString *accessTokenURLString = [kYourServerBaseURLString stringByAppendingString:kAccessTokenEndpoint];
 
     NSString *accessToken = [NSString stringWithContentsOfURL:[NSURL URLWithString:accessTokenURLString]
-                                                     encoding:NSUTF8StringEncoding
-                                                        error:nil];
+                            encoding:NSUTF8StringEncoding error:nil];
     return accessToken;
 }
 
 - (IBAction)placeCall:(id)sender {
     self.outgoingCall = [[VoiceClient sharedInstance] call:[self fetchAccessToken]
-                                                    params:@{}
-                                                  delegate:self];
+                         params:@{}
+                         delegate:self];
 
     [self toggleUIState:NO];
     [self startSpin];
 }
 
+
 - (void)toggleUIState:(BOOL)isEnabled {
     self.placeCallButton.enabled = isEnabled;
 }
 
+
 #pragma mark - PKPushRegistryDelegate
 - (void)pushRegistry:(PKPushRegistry *)registry didUpdatePushCredentials:(PKPushCredentials *)credentials forType:(NSString *)type {
+    
     NSLog(@"pushRegistry:didUpdatePushCredentials:forType:");
 
     if ([type isEqualToString:PKPushTypeVoIP]) {
@@ -75,8 +91,8 @@ static NSString *const kAccessTokenEndpoint = @"/accessToken";
         NSString *accessToken = [self fetchAccessToken];
 
         [[VoiceClient sharedInstance] register:accessToken
-                                   deviceToken:self.deviceTokenString
-                                    completion:^(NSError *error) {
+                deviceToken:self.deviceTokenString
+                completion:^(NSError *error) {
              if (error) {
                  NSLog(@"An error occurred while registering: %@", [error localizedDescription]);
              }
@@ -111,13 +127,16 @@ static NSString *const kAccessTokenEndpoint = @"/accessToken";
 - (void)pushRegistry:(PKPushRegistry *)registry didReceiveIncomingPushWithPayload:(PKPushPayload *)payload forType:(NSString *)type {
     NSLog(@"pushRegistry:didReceiveIncomingPushWithPayload:forType:");
     if ([type isEqualToString:PKPushTypeVoIP]) {
-        [[VoiceClient sharedInstance] handleNotification:payload.dictionaryPayload
-                                                delegate:self];
+        [[VoiceClient sharedInstance] handleNotification:payload.dictionaryPayload delegate:self];
     }
 }
 
 #pragma mark - TVONotificationDelegate
 - (void)incomingCallReceived:(TVOIncomingCall *)incomingCall {
+   
+    self.provider.currentIncomingCall = incomingCall;
+    [self.provider reportIncomingCall];
+    
     NSLog(@"incomingCallReceived:");
 
     NSString *from = incomingCall.from;
@@ -155,15 +174,6 @@ static NSString *const kAccessTokenEndpoint = @"/accessToken";
 
     [self toggleUIState:NO];
     [self presentViewController:self.incomingAlertController animated:YES completion:nil];
-
-    // If the application is not in the foreground, post a local notification
-    if ([[UIApplication sharedApplication] applicationState] != UIApplicationStateActive) {
-        UIApplication* app = [UIApplication sharedApplication];
-        UILocalNotification* notification = [[UILocalNotification alloc] init];
-        notification.alertBody = [NSString stringWithFormat:@"Incoming Call from %@", incomingCall.from];
-
-        [app presentLocalNotificationNow:notification];
-    }
 }
 
 - (void)incomingCallCancelled:(TVOIncomingCall *)incomingCall {
